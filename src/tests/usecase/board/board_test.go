@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	exit_code "example.com/GolangCleanArchitecture/src/enums"
+	repostory "example.com/GolangCleanArchitecture/src/repostory/board"
 	"example.com/GolangCleanArchitecture/src/usecase/board"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
@@ -28,10 +29,10 @@ func Test_should_succeed_when_create_board_in_team(t *testing.T) {
 		assert.Equal(t, exit_code.SUCCESS, output.GetExitCode())
 	}
 
-	board := boardRepository.findById(output.GetId()).get()
-	assert.Equal(t, output.GetId(), board.getBoardId())
-	assert.Equal(t, boardName, board.getName())
-	assert.Equal(t, teamId, board.getTeamId())
+	board := repostory.FindBoardById(output.GetId())
+	assert.Equal(t, output.GetId(), board.GetBoardId())
+	assert.Equal(t, boardName, board.GetName())
+	assert.Equal(t, teamId, board.GetTeamId())
 
 	// 測試
 	// // assert equality
