@@ -1,7 +1,9 @@
 package board
 
 import (
-	exit_code "example.com/GolangCleanArchitecture/src/enums"
+	"example.com/GolangCleanArchitecture/src/Application/Interface/Repository/board"
+	"example.com/GolangCleanArchitecture/src/Domain/entities"
+	exit_code "example.com/GolangCleanArchitecture/src/Domain/enums"
 	"github.com/google/uuid"
 )
 
@@ -31,8 +33,9 @@ func (output *CreateBoardUseCaseOutput) GetExitCode() int {
 	return output.exitCode
 }
 
-func CreateBoardUseCase(input CreateBoardUseCaseInput) (CreateBoardUseCaseOutput, error) {
+func CreateBoardUseCase(input CreateBoardUseCaseInput, repository irepository.IBoardRepository) (CreateBoardUseCaseOutput, error) {
 	output := CreateBoardUseCaseOutput{}
+
 	newId, err := uuid.NewUUID()
 	if err == nil {
 		output.exitCode = exit_code.SUCCESS
@@ -41,5 +44,11 @@ func CreateBoardUseCase(input CreateBoardUseCaseInput) (CreateBoardUseCaseOutput
 		output.exitCode = exit_code.Faild
 	}
 
+	newboard := board.Board{
+		Id:     newId.String(),
+		TeamId: input.TeamId,
+		Name:   input.Name,
+	}
+	repository.Add(newboard)
 	return output, err
 }

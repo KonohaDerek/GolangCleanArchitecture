@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"testing"
 
-	exit_code "example.com/GolangCleanArchitecture/src/enums"
-	repostory "example.com/GolangCleanArchitecture/src/repostory/board"
-	"example.com/GolangCleanArchitecture/src/usecase/board"
+	"example.com/GolangCleanArchitecture/src/Application/Interface/Repository/board"
+	"example.com/GolangCleanArchitecture/src/Application/usecase/board"
+	exit_code "example.com/GolangCleanArchitecture/src/Domain/enums"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
 )
@@ -14,6 +14,7 @@ import (
 func Test_should_succeed_when_create_board_in_team(t *testing.T) {
 
 	teamId, err := uuid.NewUUID()
+	repository := &irepository.BoardRepository{}
 	boardName := "kanban"
 	fmt.Printf("Your UUID is: %s", teamId)
 	assert.Nil(t, err)
@@ -22,17 +23,17 @@ func Test_should_succeed_when_create_board_in_team(t *testing.T) {
 
 	input.SetTeamId(teamId.String())
 	input.SetName(boardName)
-	output, err := board.CreateBoardUseCase(*input)
+	output, err := board.CreateBoardUseCase(*input, repository)
 	assert.Nil(t, err)
 	if assert.NotNil(t, output) {
 		assert.NotNil(t, output.GetId())
 		assert.Equal(t, exit_code.SUCCESS, output.GetExitCode())
 	}
 
-	board := repostory.FindBoardById(output.GetId())
+	board := repository.FindBoardById(output.GetId())
 	assert.Equal(t, output.GetId(), board.GetBoardId())
 	assert.Equal(t, boardName, board.GetName())
-	assert.Equal(t, teamId, board.GetTeamId())
+	assert.Equal(t, teamId.String(), board.GetTeamId())
 
 	// 測試
 	// // assert equality
